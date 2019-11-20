@@ -2,97 +2,72 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
-  font-size: 20px;
 }
-a:link {
+a, a:visited {
   color: blue;
   text-decoration: none;
 }
-a:visited {
-  color: black;
-}
-a:hover {
-  color: aqua;
-}
-a:active {
-  color: green;
-}
-a.totop {
-  padding: 30px;
-  margin: 20px;
-  color: blue;
-}
-div.totop {
-  padding: 30px;
-  margin: 20px;
+a:hover, a:active {
+     color: orange;
 }
 body {
-  /*background-image: url("lggsi-pend.jpg"); */
   background-color: #cccccc;
   background-repeat: no-repeat;
   background-size: cover;
 }
 .pagehead-container {
-  display: flex;
-  width: 900px;
-  justify-content: space-between;
-  background-color: #88e;
-  padding: 8px;
+  margin: auto;
+  width: 720px;
+  height: 50px;
+  background-color: #adebeb;
+  font-family: 'Cambay';
+  font-size: 30px;
+  padding: 5px 10px;
 }
 .pagehead{
   display: flex;
-  width: 900px;
   justify-content: space-between;
+  margin: 0px;
 }
-.logo {
-  display: flex;
-  font-family: 'Cambay';
-  font-size: 30px;
-}
-.testa {
-  display: flex;
-  color: #b0b0b0;
-  font-family: 'Cambay';
-  font-size: 30px;
-}
-.help {
-  display: flex;
-  font-family: 'Cambay';
-  font-size: 30px;
-  color: #b0b0b0;
-  justify-content: flex-end;
-}
-
 .menu-container {
-  display: flex;
-  width: 900px;
+  width: 720px;
+  height: 32px;
+  margin: auto;
   justify-content: left;
-  color: #aaa;
-  background-color: #999;
-
+  background-color: #a4e0e0;
+  font-family: 'Cambay';
+  font-size: 20px;
+  padding: 0px 10px;
 }
-.menu{
+.menu {
   display: flex;
-  width: 900px;
-  justify-content: left;
 }
-.item {
-  display: flex;
-  padding: 10px;
+.menu-item {
+  border: 1px solid #94d0d0;
+  padding: 0px 10px;
+  font-weight: bold;
 }
-table {
-  width: 800px;
-  border-collapse: collapse;
-  border: 1px solid black;
+.main {
+  width: 720px;
+  margin: auto;
 }
-th {
-  background-color: #d8d8d8;
-  text-align: left;
-  padding: 3px;
+p{margin: 20px 50px;}
+table{
+  border-collapse:collapse;
+  border-spacing:0;
+  max-width:100%;
+  width:100%;
+  display:table;
+  margin: 40px 0px;
 }
-td {
-  background-color: #e8e8e8;
-  width: 100px;
-  padding: 3px;
+table td, table th{
+  padding:8px 8px;
+  display:table-cell;
+  text-align:left;
+  vertical-align:top
 }
+table th:first-child,table td:first-child{padding-left:16px}
+table tr{border-bottom:1px solid #ddd}
+table tr:nth-child(odd){background-color:#fff}
+table tr:nth-child(even){background-color:#f8f8f8}
+img {max-width: 100%; height: auto;}

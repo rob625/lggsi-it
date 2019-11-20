@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+  <meta charset="utf-8">
+  <link rel='stylesheet' href='styles.css'/>
+  <link href='https://fonts.googleapis.com/css?family=Cambay' rel='stylesheet'>
+  <title>Liceo Galileo Galilei Siena</title>
+</head>
+<body>    <div class='pagehead-container'>
+      <div class='pagehead'>
+        <div class='logo'><a href='index.html'
+          >lggsi.it</a></div>
+        <div class='testa'><a href='index.html'
+          >Liceo Galileo Galilei Siena</a></div>
+        <div class='help'><a href='help.html'
+          >?</a></div>
+      </div>
+    </div>
+    <div class='menu-container'>
+      <div class='menu'>
+        <div class='menu-item'><a href='orario-classi.html'
+          >Orario classi</a></div>
+        <div class='menu-item'><a href='orario-docenti.html'
+          >Orario docenti</a></div>
+        <div class='menu-item'><a href='plan.html'
+          >Mappa</a></div>
+      </div>
+    </div>
+<div class='main'>
 <canvas id="myCanvas" width="1200" height="1540"></canvas>
+</div>
 <script>
   function proj(p, e) {
     var l = e.y / (e.y - p.y);
     return {
-      x: (e.x * (1 - l) + p.x * l), 
+      x: (e.x * (1 - l) + p.x * l),
       z:(e.z * (1 - l) + p.z * l)
-    };   
+    };
   }
   function plot (ctx, e){
     var pts = [];
@@ -20,12 +47,12 @@
     //ctx.fillStyle = "blue";
     ctx.beginPath();
     ctx.moveTo(
-      100 + 500 * proj(pts[npts-1],e).x,     
+      100 + 500 * proj(pts[npts-1],e).x,
       100 - 500 * proj(pts[npts-1],e).z
     );
     for (i = 0; i < npts; i++) {
       ctx.lineTo(
-        100 + 500 * proj(pts[i],e).x,     
+        100 + 500 * proj(pts[i],e).x,
         100 - 500 * proj(pts[i],e).z
       );
     }
@@ -36,7 +63,7 @@
     var hsl = "blue";
     var hue = "20";
     var saturation = "30%";
-    
+
     if ( z == -1) {hsl = "hsl(" + hue + ", " + saturation + ", 55%)";}
     if ( z == 0) {hsl = "hsl(" + hue + ", " + saturation + ", 65%)";}
     if ( z == 1) {hsl = "hsl(" + hue + ", " + saturation + ", 80%)";}
@@ -60,8 +87,8 @@
   function labelRoom(id, clas){
     var n = rooms.length;
     for (i=0; i<n; i++)
-      if (rooms[i].id == id) 
-        ctx.fillText(clas, 
+      if (rooms[i].id == id)
+        ctx.fillText(clas,
                      x2 - 11 + s * (rooms[i].x0 + rooms[i].x1) / 2,
                      y2 + 3 - s * (rooms[i].y0 + rooms[i].y1) / 2 + sz * rooms[i].z);
     //console.log (id + clas);
@@ -75,7 +102,7 @@
       p+=3;
       i++;
     }
-    
+
   }
   function plotRooms (ctx, e, rooms){
     var i = 0, j= 0, n= 0;
@@ -85,7 +112,7 @@
 
     for (z = 0; z < 4; z++) {
       ctx.fillStyle = colour(z);
-      ctx.setTransform(s, 0, 0, -s, x2, sz * z + y2); 
+      ctx.setTransform(s, 0, 0, -s, x2, sz * z + y2);
       ctx.beginPath();
       ctx.moveTo(0,0);
       ctx.lineTo(38,0);
@@ -135,7 +162,7 @@
           ctx.fill();
         }
     }
-    ctx.setTransform(s, 0, 0, -s, x2, y2); 
+    ctx.setTransform(s, 0, 0, -s, x2, y2);
     ctx.lineWidth = 1/s;
     n = rooms.length;
     for (i = 0; i < n; i++){
@@ -170,7 +197,7 @@
       ctx.fillStyle = grd;
       ctx.fillRect(x0 - xd, y0, xd, yd);
       ctx.beginPath();
-      for (j=0; j<4; j++){        
+      for (j=0; j<4; j++){
         ctx.moveTo(x0 - j, y0);
         ctx.lineTo(x0 - j, y0 + yd);
       }
@@ -187,7 +214,7 @@
       ctx.closePath();
       ctx.stroke();
     }
-    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     n = rooms.length;
     for (i = 0; i < n; i++){
       ctx.strokeText("" + rooms[i].id, x2 + 3+s * rooms[i].x0, y2 -5 + sz *rooms[i].z - s*rooms[i].y0);
@@ -206,16 +233,16 @@
       makeRoom (65,-15,37,0,15,5);
       makeStairX(1, -5, 0, 0, 1);
       makeStairX(1, -5, 33, 0, -1);
-      
-      
+
+
       makeRoom (95,-119,35,0,15,17);
       makeRoom (96,-119,52,0,15,23);
       makeRoom (97,-119,75,0,15,14);
-      
+
             makeStairY(1,-70,30,0,4,20);
 
-      
-    } 
+
+    }
     else if ( n == 1) {
       makeRoom (48,-15,37,1,10,5);
       makeRoom (49,-15,22,1,10,11);
@@ -237,7 +264,7 @@
       makeStairX(1, -5, 7, 1, -1);
       makeStairX(1, 48, 0, 1, 1);
       makeStairX(1, 48, 7, 1, -1) ;
-      
+
       makeRoom (75,-56,6,1,14,14);
       makeRoom (76,-70,6,1,14,14);
       makeRoom (77,-77,-4,1,7,5);
@@ -257,7 +284,7 @@
       makeStairY(1,-76,15,1,6,8);
       makeStairY(1,-67,20,1,4,4);
       makeStairY(1,-70,30,1,4,20);
-    } 
+    }
     else if ( n == 2) {
       makeLine (1, -35, 0, 2, 30, 0);
       makeLine (2, 0, 0, 2, 48, 0);
@@ -292,7 +319,7 @@
       makeStairX(1, -5, 7, 2, -1);
       makeStairX(1, 48, 0, 2, 1);
       makeStairX(1, 48, 7, 2, -1);
-    } 
+    }
     else if ( n == 3) {
       makeLine (1, -35, 0, 3, 30, 0);
       makeLine (2, 0, 0, 3, 48, 0);
@@ -323,14 +350,14 @@
       makeStairY(1,-11,-23,3,11,8);
     }
   }
-  
+
   var s = 5., sz = -400.;
   var x2 = 600., y2 = 1500.;
   var rooms = [];
   var lines = [];
   var stairs = [];
   var stairsY = [];
-  
+
   var swShadeBackground = false;
   var swLabelBigFloorDigit = true;
   var swPlotRoomsLinesStairs = true;
@@ -338,28 +365,28 @@
   var swLabelStairsPQ = true;
   var swPlotPendulum = true;
   var swClasses = true;
-  
+
   var i = 0, npts = 0;
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d");
   var e = {x:0.0, y:-3.0, z:1.0};
-  
+
   e.z = -1.0;
-  
-  ctx.fillText(Date(),0,20);
+
+  ctx.fillText("plan generated " + Date(),0,20);
   //ctx.transform(0.5,-0.5,0.5,0.5,-100,300); // 45 acw
   //ctx.transform(0.5,-0.5,0.5,1,-100,300); // 45 acw
-  
-  
+
+
   for (i = 0; i < 4; i++)
     makeFloor(i);
-  
+
   if (swShadeBackground){
     ctx.fillStyle = colour(3); ctx.fillRect(x2-240,y2-250+sz*3,600,400-20);
     ctx.fillStyle = colour(2); ctx.fillRect(x2-240,y2-250+sz*2,600,400-20);
     ctx.fillStyle = colour(1); ctx.fillRect(x2-240,y2-250+sz*1,600,400-30);
     ctx.fillStyle = colour(0); ctx.fillRect(x2-240,y2-250+sz*0,600,400-20);
-    
+
     }
   if (swLabelBigFloorDigit){
     ctx.font = "80px serif";
@@ -368,8 +395,8 @@
     ctx.fillText("2", x2 +15 * s , y2-21 + 2 * sz);
     ctx.fillText("1", x2 +15 * s , y2-21 + 1 * sz);
     ctx.fillText("0", x2 +15 * s , y2-21 + 0 * sz);
-  }  
-  if (swPlotRoomsLinesStairs) 
+  }
+  if (swPlotRoomsLinesStairs)
     plotRooms(ctx, e, rooms);
   if (swLabelSomePlaces){
     ctx.font = "12px serif";
@@ -419,7 +446,6 @@
     ctx.closePath();
     ctx.fill();
   }
-  
 </script>
 </body>
 </html>
