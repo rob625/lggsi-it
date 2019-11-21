@@ -6,7 +6,8 @@
   <link href='https://fonts.googleapis.com/css?family=Cambay' rel='stylesheet'>
   <title>Liceo Galileo Galilei Siena</title>
 </head>
-<body>    <div class='pagehead-container'>
+<body>
+    <div class='pagehead-container'>
       <div class='pagehead'>
         <div class='logo'><a href='index.html'
           >lggsi.it</a></div>
@@ -363,7 +364,7 @@
   var swPlotRoomsLinesStairs = true;
   var swLabelSomePlaces = true;
   var swLabelStairsPQ = true;
-  var swPlotPendulum = true;
+  var swPlotPendulum = false;
   var swClasses = true;
 
   var i = 0, npts = 0;
@@ -373,7 +374,7 @@
 
   e.z = -1.0;
 
-  ctx.fillText("plan generated " + Date(),0,20);
+  /* ctx.fillText("plan generated " + Date(),0,20); */
   //ctx.transform(0.5,-0.5,0.5,0.5,-100,300); // 45 acw
   //ctx.transform(0.5,-0.5,0.5,1,-100,300); // 45 acw
 
@@ -401,9 +402,26 @@
   if (swLabelSomePlaces){
     ctx.font = "12px serif";
     ctx.fillStyle = "rgb(90, 110, 150)";
-    ctx.fillText("Ingresso", x2 -9 * s , y2+36 + 3 * sz);
+
+    ctx.fillText("Ingresso", x2 -11 * s , y2+40 + 3 * sz);
+    ctx.fillText("Porti-", x2+2  , y2+38 + 3 * sz);
+    ctx.fillText("neria", x2+2 ,5+ y2+50 + 3 * sz);
     ctx.fillText("Aula Magna", x2 +48 * s , y2+56 + 3 * sz);
+    ctx.fillText("Lab", x2 -37 * s , y2+36 + 3 * sz);
+    ctx.fillText("linguistico", x2 -37 * s , y2+48 + 3 * sz);
+
+    ctx.fillText("Lab 1", x2 -30 * s , y2+24 + 2 * sz);
+    ctx.fillText("fisica", x2 -30 * s , y2+36 + 2 * sz);
+    ctx.fillText("Lab 2", x2 -10 * s , y2+40 + 2 * sz);
+    ctx.fillText("fisica", x2 -10 * s , y2+52 + 2 * sz);
+    ctx.fillText("Lab scienze", x2 +13 * s , y2+52 + 2 * sz);
+
+    ctx.fillText("Lab", x2 -30 * s , y2+24 + 1 * sz);
+    ctx.fillText("chimica", x2 -30 * s , y2+36 + 1 * sz);
+    ctx.fillText("Aula video grande", x2 +5 * s , y2+52 + 1 * sz);
+    ctx.fillText("ECDL", x2 +47 * s , y2+85 + 1 * sz);
     ctx.fillText("BAR", x2 +59 * s , y2+16 + 1 * sz);
+
     }
   if (swLabelStairsPQ){
     ctx.font = "16px serif";
