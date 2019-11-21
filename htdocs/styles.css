@@ -11,7 +11,8 @@ a:hover, a:active {
      color: orange;
 }
 body {
-  background-color: #cccccc;
+  /*background-color: #fccccc;  dev */
+  background: linear-gradient(LightBlue, Sienna);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -19,7 +20,7 @@ body {
   margin: auto;
   width: 720px;
   height: 50px;
-  background-color: #adebeb;
+  background-color: #BDD7D7;
   font-family: 'Cambay';
   font-size: 30px;
   padding: 5px 10px;
@@ -34,7 +35,7 @@ body {
   height: 32px;
   margin: auto;
   justify-content: left;
-  background-color: #a4e0e0;
+  background-color:#BDD7D7;
   font-family: 'Cambay';
   font-size: 20px;
   padding: 0px 10px;
@@ -43,7 +44,7 @@ body {
   display: flex;
 }
 .menu-item {
-  border: 1px solid #94d0d0;
+  /*border: 1px solid #ffdab9;*/
   padding: 0px 10px;
   font-weight: bold;
 }
