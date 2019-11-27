@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 a, a:visited {
-  color: blue;
+  color: #2A4B7C;
   text-decoration: none;
 }
 a:hover, a:active {
@@ -12,7 +12,7 @@ a:hover, a:active {
 }
 body {
   /*background-color: #fccccc;  dev */
-  background: linear-gradient(LightBlue, Sienna);
+  background: linear-gradient(#e5d6c6, #c5b6a6);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -20,7 +20,7 @@ body {
   margin: auto;
   width: 720px;
   height: 50px;
-  background-color: #BDD7D7;
+  background-color: #eDe7c7;
   font-family: 'Cambay';
   font-size: 30px;
   padding: 5px 10px;
@@ -35,7 +35,7 @@ body {
   height: 32px;
   margin: auto;
   justify-content: left;
-  background-color:#BDD7D7;
+  background-color:#eDf7d7;
   font-family: 'Cambay';
   font-size: 20px;
   padding: 0px 10px;
@@ -44,13 +44,17 @@ body {
   display: flex;
 }
 .menu-item {
-  /*border: 1px solid #ffdab9;*/
-  padding: 0px 10px;
+  /* border: 1px solid #ffdab9; */
+  padding: 0px 20px;
   font-weight: bold;
+  font-size: small;
 }
 .main {
   width: 720px;
   margin: auto;
+}
+.topnav {
+  font-size: 24px;
 }
 p{margin: 20px 50px;}
 table{
@@ -72,3 +76,5 @@ table tr{border-bottom:1px solid #ddd}
 table tr:nth-child(odd){background-color:#fff}
 table tr:nth-child(even){background-color:#f8f8f8}
 img {max-width: 100%; height: auto;}
+.foot{font-size: 8px;}
+ /*<p class="foot">2019-11-27T09:07+01:00 Rob Nowell</p> </body> </html> */
