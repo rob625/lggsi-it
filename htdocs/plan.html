@@ -1,479 +1,479 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <link rel='stylesheet' href='styles.css'/>
-  <link href='https://fonts.googleapis.com/css?family=Cambay' rel='stylesheet'>
-  <title>Liceo Galileo Galilei Siena</title>
-</head>
-<body>
-  <div class='pagehead-container'>
-    <div class='pagehead'>
-      <div class='logo'><a href='index.html'
-        >lggsi.it</a></div>
-      <div class='testa'><a href='index.html'
-        >Liceo Galileo Galilei Siena</a></div>
-      <div class='help'><a href='help.html'
-        >?</a></div>
-    </div>
-  </div>
-  <div class='menu-container'>
-    <div class='menu'>
-      <div class='menu-item'><a href='orario-classi.html'
-        ><img src= 'th-cla3.svg'
-        alt='plan thumbnail'
-        width='30'
-        />Orario classi</a></div>
-      <div class='menu-item'><a href='orario-docenti.html'
-        ><img src= 'th-pro.svg'
-        alt='plan thumbnail'
-        width='30'
-        />Orario docenti</a></div>
-      <div class='menu-item'><a href='plan.html'
-        ><img src= 'th-map.svg'
-        alt='plan thumbnail'
-        width='30'
-        />Mappa</a></div>
-    </div>
-  </div>
-  <div class='main'>
-<canvas id="myCanvas" width="1200" height="1540"></canvas>
-</div>
-<script>
-  function proj(p, e) {
-    var l = e.y / (e.y - p.y);
-    return {
-      x: (e.x * (1 - l) + p.x * l),
-      z:(e.z * (1 - l) + p.z * l)
-    };
-  }
-  function plot (ctx, e){
-    var pts = [];
-    pts.push({x:0.1, y:0.0, z:0.0});
-    pts.push({x:0.6, y:0.0, z:0.0});
-    pts.push({x:0.1, y:0.5, z:0.0});
-    //pts.push({x:0.3, y:0.5, z:0.4});
-    npts = pts.length;
-    //ctx.fillStyle = "blue";
-    ctx.beginPath();
-    ctx.moveTo(
-      100 + 500 * proj(pts[npts-1],e).x,
-      100 - 500 * proj(pts[npts-1],e).z
-    );
-    for (i = 0; i < npts; i++) {
-      ctx.lineTo(
-        100 + 500 * proj(pts[i],e).x,
-        100 - 500 * proj(pts[i],e).z
-      );
-    }
-    ctx.closePath();
-    ctx.stroke();
-  }
-  function colour(z) {
-    var hsl = "blue";
-    var hue = "20";
-    var saturation = "30%";
-
-    if ( z == -1) {hsl = "hsl(" + hue + ", " + saturation + ", 55%)";}
-    if ( z == 0) {hsl = "hsl(" + hue + ", " + saturation + ", 65%)";}
-    if ( z == 1) {hsl = "hsl(" + hue + ", " + saturation + ", 80%)";}
-    if ( z == 2) {hsl = "hsl(" + hue + ", " + saturation + ", 85%)";}
-    if ( z == 3) {hsl = "hsl(" + hue + ", " + saturation + ", 90%)";}
-    if ( z == 4) {hsl = "hsl(" + hue + ", " + saturation + ", 95%)";}
-    return hsl
-  }
-  function makeRoom (id, x, y, z, w, h) {
-    rooms.push ({id: id, x0: x, y0: y, x1: x + w, y1: y + h, z: z});
-  }
-  function makeLine (id, x, y, z, w, h) {
-    lines.push ({x0: x, y0: y, x1: x + w, y1: y + h, z: z});
-  }
-  function makeStairX (id, x, y, z0, zd) {
-    stairs.push ({x0: x, y0: y, z0: z0, zd: zd});
-  }
-  function makeStairY (id, x, y, z, xd, yd) {
-    stairsY.push ({x0: x, y0: y, z: z, xd: xd, yd: yd});
-  }
-  function labelRoom(id, clas){
-    var n = rooms.length;
-    for (i=0; i<n; i++)
-      if (rooms[i].id == id)
-        ctx.fillText(clas,
-                     x2 - 11 + s * (rooms[i].x0 + rooms[i].x1) / 2,
-                     y2 + 3 - s * (rooms[i].y0 + rooms[i].y1) / 2 + sz * rooms[i].z);
-    //console.log (id + clas);
-  }
-  function labelRooms(id, classes){
-    var l = classes.length;
-    var i = 0;
-    var p = 0;
-    while (p < l){
-      labelRoom(id+i, classes.substring(p, p+2));
-      p+=3;
-      i++;
-    }
-
-  }
-  function plotRooms (ctx, e, rooms){
-    var i = 0, j= 0, n= 0;
-    var x0=0, xd=0, y0=0, yd=0;
-    ctx.font = "12px sans-serif";
-    ctx.strokeStyle = "#707070";
-
-    for (z = 0; z < 4; z++) {
-      ctx.fillStyle = colour(z);
-      ctx.setTransform(s, 0, 0, -s, x2, sz * z + y2);
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(38,0);
-      ctx.lineTo(38,42);
-      ctx.lineTo(53,42);
-      ctx.lineTo(53,0);
-      ctx.lineTo(67, 0);
-      ctx.lineTo(67,-22);
-      ctx.lineTo(38,-22);
-      ctx.lineTo(38,-15);
-      ctx.lineTo(-38,-15);
-      ctx.lineTo(-38,0);
-      ctx.lineTo(-15,0);
-      ctx.lineTo(-15,42 );
-      ctx.lineTo(0, 42 );
-      ctx.lineTo(0, 0);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fill();
-      if (z == 0) {
-        ctx.beginPath();
-        ctx.moveTo(-119,30);
-        ctx.lineTo(-119,90);
-        ctx.lineTo(-99,90);
-        ctx.lineTo(-99,30);
-        ctx.lineTo(-119,30);
-        ctx.closePath();
-        ctx.stroke();
-        ctx.fill();
-      }
-      if (z == 1) {
-          ctx.beginPath();
-          ctx.moveTo(-119,30);
-          ctx.lineTo(-119,110);
-          ctx.lineTo(-99,110);
-          ctx.lineTo(-99,22);
-          ctx.lineTo(-86,22);
-          ctx.lineTo(-86,108);
-          ctx.lineTo(-70,108);
-          ctx.lineTo(-70,20);
-          ctx.lineTo(-38,20);
-          ctx.lineTo(-38,-8);
-          ctx.lineTo(-70,-8);
-          ctx.lineTo(-119,30);
-          ctx.closePath();
-          ctx.stroke();
-          ctx.fill();
-        }
-    }
-    ctx.setTransform(s, 0, 0, -s, x2, y2);
-    ctx.lineWidth = 1/s;
-    n = rooms.length;
-    for (i = 0; i < n; i++){
-      ctx.beginPath();
-      ctx.moveTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y0);
-      ctx.lineTo(rooms[i].x1, - sz / s *rooms[i].z+rooms[i].y0);
-      ctx.lineTo(rooms[i].x1, - sz / s *rooms[i].z+rooms[i].y1);
-      ctx.lineTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y1);
-      ctx.lineTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y0);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    n = 0; // lines.length;
-    for (i = 0; i < n; i++){
-      ctx.beginPath();
-      ctx.moveTo(lines[i].x0, - sz / s *lines[i].z+lines[i].y0);
-      ctx.lineTo(lines[i].x1, - sz / s *lines[i].z+lines[i].y1);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    n = stairs.length;
-    for (i = 0; i < n; i++){
-      xd = 4 ;
-      yd = 4 ;
-      x0 = (stairs[i].x0) ;
-      y0 = - sz / s *stairs[i].z0+stairs[i].y0;
-      // Create gradient
-      var grd = ctx.createLinearGradient(x0 - xd, y0, x0, y0);
-      grd.addColorStop(0, colour (stairs[i].z0+stairs[i].zd));
-      grd.addColorStop(1, colour (stairs[i].z0 ));
-      // Fill with gradient
-      ctx.fillStyle = grd;
-      ctx.fillRect(x0 - xd, y0, xd, yd);
-      ctx.beginPath();
-      for (j=0; j<4; j++){
-        ctx.moveTo(x0 - j, y0);
-        ctx.lineTo(x0 - j, y0 + yd);
-      }
-      ctx.closePath();
-      ctx.stroke();
-    }
-    n = stairsY.length;
-    for (i = 0; i < n; i++){
-      ctx.beginPath();
-      for (j=0; j<stairsY[i].yd; j++){
-        ctx.moveTo((stairsY[i].x0), - sz / s *stairsY[i].z+(stairsY[i].y0+j));
-        ctx.lineTo((stairsY[i].x0+stairsY[i].xd), - sz / s *stairsY[i].z+(stairsY[i].y0+j));
-      }
-      ctx.closePath();
-      ctx.stroke();
-    }
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    n = rooms.length;
-    for (i = 0; i < n; i++){
-      ctx.strokeText("" + rooms[i].id, x2 + 3+s * rooms[i].x0, y2 -5 + sz *rooms[i].z - s*rooms[i].y0);
-    }
-    ctx.fill();
-  }
-  function makeFloor(n){
-    if (n == 0) {
-      makeLine(0,0,5,0,0,33);
-      makeLine(0,0,5,0,16,0);
-      makeLine(0,-5,-5,0,21,0);
-      makeLine(0,-5,-5,0,0,5);
-
-      makeRoom (63,-15,11,0,10,11);
-      makeRoom (64,-15,22,0,10,11);
-      makeRoom (65,-15,37,0,15,5);
-      makeStairX(1, -5, 0, 0, 1);
-      makeStairX(1, -5, 33, 0, -1);
-
-
-      makeRoom (95,-119,35,0,15,17);
-      makeRoom (96,-119,52,0,15,23);
-      makeRoom (97,-119,75,0,15,14);
-
-            makeStairY(1,-70,30,0,4,20);
-
-
-    }
-    else if ( n == 1) {
-      makeRoom (48,-15,37,1,10,5);
-      makeRoom (49,-15,22,1,10,11);
-      makeRoom (50,-15,11,1,10,11);
-      makeRoom (51,-38,-10,1,17,10);
-      makeRoom (0,-21,-15, 1,8,10);
-      makeRoom (0,-13,-15, 1,8,10);
-      makeRoom (0,-5,-15, 1,5,10);
-      makeRoom (52,0,-15,1,26,10);
-      makeRoom (53,26,-15,1,5,10);
-      makeRoom (54,31,-15,1,7,10);
-      makeRoom (55,38,-22,1,7,17);
-      makeRoom (56,45,-22,1,10,10);
-      makeRoom (57,55,-22,1,12,17);
-      makeRoom (58,38,11,1,10,11);
-      makeRoom (59,38,22,1,10,11);
-      makeRoom (60,38,37,1,15,5);
-      makeStairX(1, -5, 0, 1, 1);
-      makeStairX(1, -5, 7, 1, -1);
-      makeStairX(1, 48, 0, 1, 1);
-      makeStairX(1, 48, 7, 1, -1) ;
-
-      makeRoom (75,-56,6,1,14,14);
-      makeRoom (76,-70,6,1,14,14);
-      makeRoom (77,-77,-4,1,7,5);
-
-      makeRoom (78,-86,28,1,11,14);
-      makeRoom (79,-86,42,1,11,15);
-      makeRoom (80,-86,57,1,11,13);
-      makeRoom (81,-86,70,1,11,13);
-      makeRoom (82,-86,83,1,11,12);
-      makeRoom (84,-86,95,1,11,13);
-
-      makeRoom (87,-119,42,1,15,17);
-      makeRoom (88,-119,59,1,15,23);
-      makeRoom (89,-119,82,1,15,14);
-      makeRoom (90,-119,96,1,15,14);
-      makeStairY(1,-24,1,1,8,4);
-      makeStairY(1,-76,15,1,6,8);
-      makeStairY(1,-67,20,1,4,4);
-      makeStairY(1,-70,30,1,4,20);
-    }
-    else if ( n == 2) {
-      makeLine (1, -35, 0, 2, 30, 0);
-      makeLine (2, 0, 0, 2, 48, 0);
-      makeLine (3, 53, 0, 2, 16, 0);
-      makeLine (4, 0, 0, 2, 0, 44);
-      makeLine (4, -5, 44, 2, 5, 0);
-      makeLine (4, 53, 0, 2, 0, 36);
-      makeLine (4, -35, -15, 2, 35, 0);
-      makeLine (4, -35, -15, 2, 0, 5);
-      makeLine (4, -18, -5, 2, 2, 0);
-
-      makeRoom (29,-15,31,2,10,11)
-      makeRoom (30,-15,17,2,10,14);
-      makeRoom (31,-15,11,2,10,6);
-      makeRoom (32,-38,-11,2,20,11);
-      makeRoom (34,-12,-15,2,12,10);
-      makeRoom (35,0,-15,2,11,10);
-      makeRoom (36,11,-15,2,17,10);
-      makeRoom (37,28,-15,2,6,10);
-      makeRoom (38,34,-15,2,7,10);
-
-      makeRoom (39,41,-22,2,5,16);
-      makeRoom (40,46,-22,2,6,16);
-      makeRoom (41,52,-22,2,5,16);
-      makeRoom (42,57,-22,2,10,16);
-      makeRoom (43,63,-6,2,4,6);
-      makeRoom (44,38,11,2,10,6);
-      makeRoom (45,38,17,2,10,14);
-      makeRoom (46,38,31,2,10,11);
-      makeRoom (47,48,36,2,5,6);
-      makeStairX(1, -5, 0, 2, 1);
-      makeStairX(1, -5, 7, 2, -1);
-      makeStairX(1, 48, 0, 2, 1);
-      makeStairX(1, 48, 7, 2, -1);
-    }
-    else if ( n == 3) {
-      makeLine (1, -35, 0, 3, 30, 0);
-      makeLine (2, 0, 0, 3, 48, 0);
-      makeLine (3, 53, 0, 3, 16, 0);
-      makeLine (4, 0, 0, 3, 0, 42);
-      makeLine (4, 53, 0, 3, 0, 36);
-
-      makeRoom (12,-5,38,3,5,4);
-      makeRoom (13,-15,29,3,10,13);
-      makeRoom (14,-15,16,3,10,13);
-      makeRoom (15,-15,11,3,10,5);
-      makeRoom (16,-38,-15,3,15,15);
-      makeRoom (17,-23,-15,3,5,10);
-      makeRoom (18,-18,-15,3,6,10);
-      makeRoom (19,0,-15,3,6,10);
-      makeRoom (20,6,-15,3,11,10);
-      makeRoom (21,17,-15,3,12,10);
-      makeRoom (22,29,-15,3,12,10);
-      makeRoom (23,41,-22,3,26,17);
-      makeRoom (24,62,-5,3,5,5);
-      makeRoom (25,38,11,3,10,5);
-      makeRoom (26,38,16,3,10,13);
-      makeRoom (27,38,29,3,10,13);
-      makeRoom (28,48,36,3,5,6);
-      makeStairX(1, -5, 0, 3, 1);
-      makeStairX(1, -5, 7, 3, -1);
-      makeStairX(1, 48, 7, 3, -1);
-      makeStairY(1,-11,-23,3,11,8);
-    }
-  }
-
-  var s = 5., sz = -400.;
-  var x2 = 600., y2 = 1500.;
-  var rooms = [];
-  var lines = [];
-  var stairs = [];
-  var stairsY = [];
-
-  var swShadeBackground = false;
-  var swLabelBigFloorDigit = true;
-  var swPlotRoomsLinesStairs = true;
-  var swLabelSomePlaces = true;
-  var swLabelStairsPQ = true;
-  var swPlotPendulum = false;
-  var swClasses = true;
-
-  var i = 0, npts = 0;
-  var canvas = document.getElementById("myCanvas");
-  var ctx = canvas.getContext("2d");
-  var e = {x:0.0, y:-3.0, z:1.0};
-
-  e.z = -1.0;
-
-  /* ctx.fillText("plan generated " + Date(),0,20); */
-  //ctx.transform(0.5,-0.5,0.5,0.5,-100,300); // 45 acw
-  //ctx.transform(0.5,-0.5,0.5,1,-100,300); // 45 acw
-
-
-  for (i = 0; i < 4; i++)
-    makeFloor(i);
-
-  if (swShadeBackground){
-    ctx.fillStyle = colour(3); ctx.fillRect(x2-240,y2-250+sz*3,600,400-20);
-    ctx.fillStyle = colour(2); ctx.fillRect(x2-240,y2-250+sz*2,600,400-20);
-    ctx.fillStyle = colour(1); ctx.fillRect(x2-240,y2-250+sz*1,600,400-30);
-    ctx.fillStyle = colour(0); ctx.fillRect(x2-240,y2-250+sz*0,600,400-20);
-
-    }
-  if (swLabelBigFloorDigit){
-    ctx.font = "80px serif";
-    ctx.fillStyle = "#BDB76B" ; /*"rgb(190, 190, 60)";*/
-    ctx.fillText("3", x2 +15 * s , y2-21 + 3 * sz);
-    ctx.fillText("2", x2 +15 * s , y2-21 + 2 * sz);
-    ctx.fillText("1", x2 +15 * s , y2-21 + 1 * sz);
-    ctx.fillText("0", x2 +15 * s , y2-21 + 0 * sz);
-  }
-  if (swPlotRoomsLinesStairs)
-    plotRooms(ctx, e, rooms);
-  if (swLabelSomePlaces){
-    ctx.font = "12px serif";
-    ctx.fillStyle = "rgb(90, 110, 150)";
-
-    ctx.fillText("Ingresso", x2 -11 * s , y2+40 + 3 * sz);
-    ctx.fillText("Porti-", x2+2  , y2+38 + 3 * sz);
-    ctx.fillText("neria", x2+2 ,5+ y2+50 + 3 * sz);
-    ctx.fillText("Aula Magna", x2 +48 * s , y2+56 + 3 * sz);
-    ctx.fillText("Lab", x2 -37 * s , y2+36 + 3 * sz);
-    ctx.fillText("linguistico", x2 -37 * s , y2+48 + 3 * sz);
-
-    ctx.fillText("Lab 1", x2 -30 * s , y2+24 + 2 * sz);
-    ctx.fillText("fisica", x2 -30 * s , y2+36 + 2 * sz);
-    ctx.fillText("Lab 2", x2 -10 * s , y2+40 + 2 * sz);
-    ctx.fillText("fisica", x2 -10 * s , y2+52 + 2 * sz);
-    ctx.fillText("Lab scienze", x2 +13 * s , y2+52 + 2 * sz);
-
-    ctx.fillText("Lab", x2 -30 * s , y2+24 + 1 * sz);
-    ctx.fillText("chimica", x2 -30 * s , y2+36 + 1 * sz);
-    ctx.fillText("Aula video grande", x2 +5 * s , y2+52 + 1 * sz);
-    ctx.fillText("ECDL", x2 +47 * s , y2+85 + 1 * sz);
-    ctx.fillText("BAR", x2 +59 * s , y2+16 + 1 * sz);
-
-    }
-  if (swLabelStairsPQ){
-    ctx.font = "16px serif";
-    ctx.fillStyle ="rgb(204, 102, 0)";
-    ctx.fillText("P3", x2 -4 * s , y2-16 + 3 * sz);
-    ctx.fillText("P2", x2 -4 * s , y2-16 + 2 * sz);
-    ctx.fillText("P1", x2 -4 * s , y2-16 + 1 * sz);
-    ctx.fillText("P0", x2 -4 * s , y2-16 + 0 * sz);
-    ctx.fillStyle = "rgb(0, 102, 204)";
-    ctx.fillText("Q3", x2 +49 * s , y2-16 + 3 * sz);
-    ctx.fillText("Q2", x2 +49 * s , y2-16 + 2 * sz);
-    ctx.fillText("Q1", x2 +49 * s , y2-16 + 1 * sz);
-  }
-  if(swClasses) {
-    ctx.font = "24px serif";
-    ctx.fillStyle ="rgb(90, 110, 150)";
-    labelRooms (13, "1G 3F");
-    labelRooms (18, "5S");
-    labelRooms (20, "4E 5E 5D");
-    labelRooms (26, "4S 5C");
-    labelRooms (29, "3C 3S");
-    labelRooms (35, "5L");
-    labelRooms (39, "5o 5I 3I 3D");
-    labelRooms (45, "4Y 3Y");
-    labelRooms (49, "4G 4I");
-    labelRooms (55, "2I");
-    labelRooms (57, "1o 2Y 3L");
-    labelRooms (63, "1B 1F");
-    labelRooms (75, "2D 1L");
-    labelRooms (78, "2E 2C 2L 2S");
-    labelRooms (84, "2B");
-    labelRooms (87, "1E 2o 1D 1C");
-    labelRooms (95, "1I 1S 3E");
-  }
-  if (swPlotPendulum) {
-    ctx.strokeStyle = "rgb(0, 160, 204)";
-    ctx.fillStyle = "rgb(240, 120, 240)";
-    ctx.beginPath();
-    ctx.arc(x2 -8 * s , y2-30 + 0 * sz, 7, 0, 2. * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-  }
-</script>
-<p class="foot">2019-11-28T07:20+01:00 Rob Nowell</p>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <link rel='stylesheet' href='styles.css'/>
+  <link href='https://fonts.googleapis.com/css?family=Cambay' rel='stylesheet'>
+  <title>Liceo Galileo Galilei Siena</title>
+</head>
+<body>
+  <div class='pagehead-container'>
+    <div class='pagehead'>
+      <div class='logo'><a href='index.html'
+        >lggsi.it</a></div>
+      <div class='testa'><a href='index.html'
+        >Liceo Galileo Galilei Siena</a></div>
+      <div class='help'><a href='help.html'
+        >?</a></div>
+    </div>
+  </div>
+  <div class='menu-container'>
+    <div class='menu'>
+      <div class='menu-item'><a href='orario-classi.html'
+        ><img src= 'th-cla3.svg'
+        alt='plan thumbnail'
+        width='30'
+        />Orario classi</a></div>
+      <div class='menu-item'><a href='orario-docenti.html'
+        ><img src= 'th-pro.svg'
+        alt='plan thumbnail'
+        width='30'
+        />Orario docenti</a></div>
+      <div class='menu-item'><a href='plan.html'
+        ><img src= 'th-map.svg'
+        alt='plan thumbnail'
+        width='30'
+        />Mappa</a></div>
+    </div>
+  </div>
+  <div class='main'>
+<canvas id="myCanvas" width="1200" height="1540"></canvas>
+</div>
+<script>
+  function proj(p, e) {
+    var l = e.y / (e.y - p.y);
+    return {
+      x: (e.x * (1 - l) + p.x * l),
+      z:(e.z * (1 - l) + p.z * l)
+    };
+  }
+  function plot (ctx, e){
+    var pts = [];
+    pts.push({x:0.1, y:0.0, z:0.0});
+    pts.push({x:0.6, y:0.0, z:0.0});
+    pts.push({x:0.1, y:0.5, z:0.0});
+    //pts.push({x:0.3, y:0.5, z:0.4});
+    npts = pts.length;
+    //ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.moveTo(
+      100 + 500 * proj(pts[npts-1],e).x,
+      100 - 500 * proj(pts[npts-1],e).z
+    );
+    for (i = 0; i < npts; i++) {
+      ctx.lineTo(
+        100 + 500 * proj(pts[i],e).x,
+        100 - 500 * proj(pts[i],e).z
+      );
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+  function colour(z) {
+    var hsl = "blue";
+    var hue = "20";
+    var saturation = "30%";
+
+    if ( z == -1) {hsl = "hsl(" + hue + ", " + saturation + ", 55%)";}
+    if ( z == 0) {hsl = "hsl(" + hue + ", " + saturation + ", 65%)";}
+    if ( z == 1) {hsl = "hsl(" + hue + ", " + saturation + ", 80%)";}
+    if ( z == 2) {hsl = "hsl(" + hue + ", " + saturation + ", 85%)";}
+    if ( z == 3) {hsl = "hsl(" + hue + ", " + saturation + ", 90%)";}
+    if ( z == 4) {hsl = "hsl(" + hue + ", " + saturation + ", 95%)";}
+    return hsl
+  }
+  function makeRoom (id, x, y, z, w, h) {
+    rooms.push ({id: id, x0: x, y0: y, x1: x + w, y1: y + h, z: z});
+  }
+  function makeLine (id, x, y, z, w, h) {
+    lines.push ({x0: x, y0: y, x1: x + w, y1: y + h, z: z});
+  }
+  function makeStairX (id, x, y, z0, zd) {
+    stairs.push ({x0: x, y0: y, z0: z0, zd: zd});
+  }
+  function makeStairY (id, x, y, z, xd, yd) {
+    stairsY.push ({x0: x, y0: y, z: z, xd: xd, yd: yd});
+  }
+  function labelRoom(id, clas){
+    var n = rooms.length;
+    for (i=0; i<n; i++)
+      if (rooms[i].id == id)
+        ctx.fillText(clas,
+                     x2 - 11 + s * (rooms[i].x0 + rooms[i].x1) / 2,
+                     y2 + 3 - s * (rooms[i].y0 + rooms[i].y1) / 2 + sz * rooms[i].z);
+    //console.log (id + clas);
+  }
+  function labelRooms(id, classes){
+    var l = classes.length;
+    var i = 0;
+    var p = 0;
+    while (p < l){
+      labelRoom(id+i, classes.substring(p, p+2));
+      p+=3;
+      i++;
+    }
+
+  }
+  function plotRooms (ctx, e, rooms){
+    var i = 0, j= 0, n= 0;
+    var x0=0, xd=0, y0=0, yd=0;
+    ctx.font = "12px sans-serif";
+    ctx.strokeStyle = "#707070";
+
+    for (z = 0; z < 4; z++) {
+      ctx.fillStyle = colour(z);
+      ctx.setTransform(s, 0, 0, -s, x2, sz * z + y2);
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(38,0);
+      ctx.lineTo(38,42);
+      ctx.lineTo(53,42);
+      ctx.lineTo(53,0);
+      ctx.lineTo(67, 0);
+      ctx.lineTo(67,-22);
+      ctx.lineTo(38,-22);
+      ctx.lineTo(38,-15);
+      ctx.lineTo(-38,-15);
+      ctx.lineTo(-38,0);
+      ctx.lineTo(-15,0);
+      ctx.lineTo(-15,42 );
+      ctx.lineTo(0, 42 );
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+      if (z == 0) {
+        ctx.beginPath();
+        ctx.moveTo(-119,30);
+        ctx.lineTo(-119,90);
+        ctx.lineTo(-99,90);
+        ctx.lineTo(-99,30);
+        ctx.lineTo(-119,30);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+      }
+      if (z == 1) {
+          ctx.beginPath();
+          ctx.moveTo(-119,30);
+          ctx.lineTo(-119,110);
+          ctx.lineTo(-99,110);
+          ctx.lineTo(-99,22);
+          ctx.lineTo(-86,22);
+          ctx.lineTo(-86,108);
+          ctx.lineTo(-70,108);
+          ctx.lineTo(-70,20);
+          ctx.lineTo(-38,20);
+          ctx.lineTo(-38,-8);
+          ctx.lineTo(-70,-8);
+          ctx.lineTo(-119,30);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.fill();
+        }
+    }
+    ctx.setTransform(s, 0, 0, -s, x2, y2);
+    ctx.lineWidth = 1/s;
+    n = rooms.length;
+    for (i = 0; i < n; i++){
+      ctx.beginPath();
+      ctx.moveTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y0);
+      ctx.lineTo(rooms[i].x1, - sz / s *rooms[i].z+rooms[i].y0);
+      ctx.lineTo(rooms[i].x1, - sz / s *rooms[i].z+rooms[i].y1);
+      ctx.lineTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y1);
+      ctx.lineTo(rooms[i].x0, - sz / s *rooms[i].z+rooms[i].y0);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    n = 0; // lines.length;
+    for (i = 0; i < n; i++){
+      ctx.beginPath();
+      ctx.moveTo(lines[i].x0, - sz / s *lines[i].z+lines[i].y0);
+      ctx.lineTo(lines[i].x1, - sz / s *lines[i].z+lines[i].y1);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    n = stairs.length;
+    for (i = 0; i < n; i++){
+      xd = 4 ;
+      yd = 4 ;
+      x0 = (stairs[i].x0) ;
+      y0 = - sz / s *stairs[i].z0+stairs[i].y0;
+      // Create gradient
+      var grd = ctx.createLinearGradient(x0 - xd, y0, x0, y0);
+      grd.addColorStop(0, colour (stairs[i].z0+stairs[i].zd));
+      grd.addColorStop(1, colour (stairs[i].z0 ));
+      // Fill with gradient
+      ctx.fillStyle = grd;
+      ctx.fillRect(x0 - xd, y0, xd, yd);
+      ctx.beginPath();
+      for (j=0; j<4; j++){
+        ctx.moveTo(x0 - j, y0);
+        ctx.lineTo(x0 - j, y0 + yd);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+    n = stairsY.length;
+    for (i = 0; i < n; i++){
+      ctx.beginPath();
+      for (j=0; j<stairsY[i].yd; j++){
+        ctx.moveTo((stairsY[i].x0), - sz / s *stairsY[i].z+(stairsY[i].y0+j));
+        ctx.lineTo((stairsY[i].x0+stairsY[i].xd), - sz / s *stairsY[i].z+(stairsY[i].y0+j));
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    n = rooms.length;
+    for (i = 0; i < n; i++){
+      ctx.strokeText("" + rooms[i].id, x2 + 3+s * rooms[i].x0, y2 -5 + sz *rooms[i].z - s*rooms[i].y0);
+    }
+    ctx.fill();
+  }
+  function makeFloor(n){
+    if (n == 0) {
+      makeLine(0,0,5,0,0,33);
+      makeLine(0,0,5,0,16,0);
+      makeLine(0,-5,-5,0,21,0);
+      makeLine(0,-5,-5,0,0,5);
+
+      makeRoom (63,-15,11,0,10,11);
+      makeRoom (64,-15,22,0,10,11);
+      makeRoom (65,-15,37,0,15,5);
+      makeStairX(1, -5, 0, 0, 1);
+      makeStairX(1, -5, 33, 0, -1);
+
+
+      makeRoom (95,-119,35,0,15,17);
+      makeRoom (96,-119,52,0,15,23);
+      makeRoom (97,-119,75,0,15,14);
+
+            makeStairY(1,-70,30,0,4,20);
+
+
+    }
+    else if ( n == 1) {
+      makeRoom (48,-15,37,1,10,5);
+      makeRoom (49,-15,22,1,10,11);
+      makeRoom (50,-15,11,1,10,11);
+      makeRoom (51,-38,-10,1,17,10);
+      makeRoom (0,-21,-15, 1,8,10);
+      makeRoom (0,-13,-15, 1,8,10);
+      makeRoom (0,-5,-15, 1,5,10);
+      makeRoom (52,0,-15,1,26,10);
+      makeRoom (53,26,-15,1,5,10);
+      makeRoom (54,31,-15,1,7,10);
+      makeRoom (55,38,-22,1,7,17);
+      makeRoom (56,45,-22,1,10,10);
+      makeRoom (57,55,-22,1,12,17);
+      makeRoom (58,38,11,1,10,11);
+      makeRoom (59,38,22,1,10,11);
+      makeRoom (60,38,37,1,15,5);
+      makeStairX(1, -5, 0, 1, 1);
+      makeStairX(1, -5, 7, 1, -1);
+      makeStairX(1, 48, 0, 1, 1);
+      makeStairX(1, 48, 7, 1, -1) ;
+
+      makeRoom (75,-56,6,1,14,14);
+      makeRoom (76,-70,6,1,14,14);
+      makeRoom (77,-77,-4,1,7,5);
+
+      makeRoom (78,-86,28,1,11,14);
+      makeRoom (79,-86,42,1,11,15);
+      makeRoom (80,-86,57,1,11,13);
+      makeRoom (81,-86,70,1,11,13);
+      makeRoom (82,-86,83,1,11,12);
+      makeRoom (84,-86,95,1,11,13);
+
+      makeRoom (87,-119,42,1,15,17);
+      makeRoom (88,-119,59,1,15,23);
+      makeRoom (89,-119,82,1,15,14);
+      makeRoom (90,-119,96,1,15,14);
+      makeStairY(1,-24,1,1,8,4);
+      makeStairY(1,-76,15,1,6,8);
+      makeStairY(1,-67,20,1,4,4);
+      makeStairY(1,-70,30,1,4,20);
+    }
+    else if ( n == 2) {
+      makeLine (1, -35, 0, 2, 30, 0);
+      makeLine (2, 0, 0, 2, 48, 0);
+      makeLine (3, 53, 0, 2, 16, 0);
+      makeLine (4, 0, 0, 2, 0, 44);
+      makeLine (4, -5, 44, 2, 5, 0);
+      makeLine (4, 53, 0, 2, 0, 36);
+      makeLine (4, -35, -15, 2, 35, 0);
+      makeLine (4, -35, -15, 2, 0, 5);
+      makeLine (4, -18, -5, 2, 2, 0);
+
+      makeRoom (29,-15,31,2,10,11)
+      makeRoom (30,-15,17,2,10,14);
+      makeRoom (31,-15,11,2,10,6);
+      makeRoom (32,-38,-11,2,20,11);
+      makeRoom (34,-12,-15,2,12,10);
+      makeRoom (35,0,-15,2,11,10);
+      makeRoom (36,11,-15,2,17,10);
+      makeRoom (37,28,-15,2,6,10);
+      makeRoom (38,34,-15,2,7,10);
+
+      makeRoom (39,41,-22,2,5,16);
+      makeRoom (40,46,-22,2,6,16);
+      makeRoom (41,52,-22,2,5,16);
+      makeRoom (42,57,-22,2,10,16);
+      makeRoom (43,63,-6,2,4,6);
+      makeRoom (44,38,11,2,10,6);
+      makeRoom (45,38,17,2,10,14);
+      makeRoom (46,38,31,2,10,11);
+      makeRoom (47,48,36,2,5,6);
+      makeStairX(1, -5, 0, 2, 1);
+      makeStairX(1, -5, 7, 2, -1);
+      makeStairX(1, 48, 0, 2, 1);
+      makeStairX(1, 48, 7, 2, -1);
+    }
+    else if ( n == 3) {
+      makeLine (1, -35, 0, 3, 30, 0);
+      makeLine (2, 0, 0, 3, 48, 0);
+      makeLine (3, 53, 0, 3, 16, 0);
+      makeLine (4, 0, 0, 3, 0, 42);
+      makeLine (4, 53, 0, 3, 0, 36);
+
+      makeRoom (12,-5,38,3,5,4);
+      makeRoom (13,-15,29,3,10,13);
+      makeRoom (14,-15,16,3,10,13);
+      makeRoom (15,-15,11,3,10,5);
+      makeRoom (16,-38,-15,3,15,15);
+      makeRoom (17,-23,-15,3,5,10);
+      makeRoom (18,-18,-15,3,6,10);
+      makeRoom (19,0,-15,3,6,10);
+      makeRoom (20,6,-15,3,11,10);
+      makeRoom (21,17,-15,3,12,10);
+      makeRoom (22,29,-15,3,12,10);
+      makeRoom (23,41,-22,3,26,17);
+      makeRoom (24,62,-5,3,5,5);
+      makeRoom (25,38,11,3,10,5);
+      makeRoom (26,38,16,3,10,13);
+      makeRoom (27,38,29,3,10,13);
+      makeRoom (28,48,36,3,5,6);
+      makeStairX(1, -5, 0, 3, 1);
+      makeStairX(1, -5, 7, 3, -1);
+      makeStairX(1, 48, 7, 3, -1);
+      makeStairY(1,-11,-23,3,11,8);
+    }
+  }
+
+  var s = 5., sz = -400.;
+  var x2 = 600., y2 = 1500.;
+  var rooms = [];
+  var lines = [];
+  var stairs = [];
+  var stairsY = [];
+
+  var swShadeBackground = false;
+  var swLabelBigFloorDigit = true;
+  var swPlotRoomsLinesStairs = true;
+  var swLabelSomePlaces = true;
+  var swLabelStairsPQ = true;
+  var swPlotPendulum = false;
+  var swClasses = true;
+
+  var i = 0, npts = 0;
+  var canvas = document.getElementById("myCanvas");
+  var ctx = canvas.getContext("2d");
+  var e = {x:0.0, y:-3.0, z:1.0};
+
+  e.z = -1.0;
+
+  /* ctx.fillText("plan generated " + Date(),0,20); */
+  //ctx.transform(0.5,-0.5,0.5,0.5,-100,300); // 45 acw
+  //ctx.transform(0.5,-0.5,0.5,1,-100,300); // 45 acw
+
+
+  for (i = 0; i < 4; i++)
+    makeFloor(i);
+
+  if (swShadeBackground){
+    ctx.fillStyle = colour(3); ctx.fillRect(x2-240,y2-250+sz*3,600,400-20);
+    ctx.fillStyle = colour(2); ctx.fillRect(x2-240,y2-250+sz*2,600,400-20);
+    ctx.fillStyle = colour(1); ctx.fillRect(x2-240,y2-250+sz*1,600,400-30);
+    ctx.fillStyle = colour(0); ctx.fillRect(x2-240,y2-250+sz*0,600,400-20);
+
+    }
+  if (swLabelBigFloorDigit){
+    ctx.font = "80px serif";
+    ctx.fillStyle = "#BDB76B" ; /*"rgb(190, 190, 60)";*/
+    ctx.fillText("3", x2 +15 * s , y2-21 + 3 * sz);
+    ctx.fillText("2", x2 +15 * s , y2-21 + 2 * sz);
+    ctx.fillText("1", x2 +15 * s , y2-21 + 1 * sz);
+    ctx.fillText("0", x2 +15 * s , y2-21 + 0 * sz);
+  }
+  if (swPlotRoomsLinesStairs)
+    plotRooms(ctx, e, rooms);
+  if (swLabelSomePlaces){
+    ctx.font = "12px serif";
+    ctx.fillStyle = "rgb(90, 110, 150)";
+
+    ctx.fillText("Ingresso", x2 -11 * s , y2+40 + 3 * sz);
+    ctx.fillText("Porti-", x2+2  , y2+38 + 3 * sz);
+    ctx.fillText("neria", x2+2 ,5+ y2+50 + 3 * sz);
+    ctx.fillText("Aula Magna", x2 +48 * s , y2+56 + 3 * sz);
+    ctx.fillText("Lab", x2 -37 * s , y2+36 + 3 * sz);
+    ctx.fillText("linguistico", x2 -37 * s , y2+48 + 3 * sz);
+
+    ctx.fillText("Lab 1", x2 -30 * s , y2+24 + 2 * sz);
+    ctx.fillText("fisica", x2 -30 * s , y2+36 + 2 * sz);
+    ctx.fillText("Lab 2", x2 -10 * s , y2+40 + 2 * sz);
+    ctx.fillText("fisica", x2 -10 * s , y2+52 + 2 * sz);
+    ctx.fillText("Lab scienze", x2 +13 * s , y2+52 + 2 * sz);
+
+    ctx.fillText("Lab", x2 -30 * s , y2+24 + 1 * sz);
+    ctx.fillText("chimica", x2 -30 * s , y2+36 + 1 * sz);
+    ctx.fillText("Aula video grande", x2 +5 * s , y2+52 + 1 * sz);
+    ctx.fillText("ECDL", x2 +47 * s , y2+85 + 1 * sz);
+    ctx.fillText("BAR", x2 +59 * s , y2+16 + 1 * sz);
+
+    }
+  if (swLabelStairsPQ){
+    ctx.font = "16px serif";
+    ctx.fillStyle ="rgb(204, 102, 0)";
+    ctx.fillText("P3", x2 -4 * s , y2-16 + 3 * sz);
+    ctx.fillText("P2", x2 -4 * s , y2-16 + 2 * sz);
+    ctx.fillText("P1", x2 -4 * s , y2-16 + 1 * sz);
+    ctx.fillText("P0", x2 -4 * s , y2-16 + 0 * sz);
+    ctx.fillStyle = "rgb(0, 102, 204)";
+    ctx.fillText("Q3", x2 +49 * s , y2-16 + 3 * sz);
+    ctx.fillText("Q2", x2 +49 * s , y2-16 + 2 * sz);
+    ctx.fillText("Q1", x2 +49 * s , y2-16 + 1 * sz);
+  }
+  if(swClasses) {
+    ctx.font = "24px serif";
+    ctx.fillStyle ="rgb(90, 110, 150)";
+    labelRooms (13, "1G 3F");
+    labelRooms (18, "5S");
+    labelRooms (20, "4E 5E 5D");
+    labelRooms (26, "4S 5C");
+    labelRooms (29, "3C 3S");
+    labelRooms (35, "5L");
+    labelRooms (39, "5o 5I 3I 3D");
+    labelRooms (45, "4Y 3Y");
+    labelRooms (49, "1B 4I");
+    labelRooms (54, "4C 2I");
+    labelRooms (57, "1o 2Y 3L");
+    labelRooms (63, "4L 1F 4G");
+    labelRooms (75, "2D 1L");
+    labelRooms (78, "2E 2C 2L 2S");
+    labelRooms (84, "2B");
+    labelRooms (87, "1E 2o 1D 1C");
+    labelRooms (95, "1I 1S 3E");
+  }
+  if (swPlotPendulum) {
+    ctx.strokeStyle = "rgb(0, 160, 204)";
+    ctx.fillStyle = "rgb(240, 120, 240)";
+    ctx.beginPath();
+    ctx.arc(x2 -8 * s , y2-30 + 0 * sz, 7, 0, 2. * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+  }
+</script>
+<p class="foot">2020-01-08T15:40+01:00 Rob Nowell</p>
+</body>
+</html>
